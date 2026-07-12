@@ -1,1 +1,1 @@
-# TransitOps-Odoo-Hackathon-2026
+# TransitOps Odoo Hackathon 2026

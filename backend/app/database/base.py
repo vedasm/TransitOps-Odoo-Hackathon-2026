@@ -5,7 +5,7 @@ from app.core.config import settings
 
 # Create engine with connection pooling for production
 engine = create_engine(
-    settings.DATABASE_URL,
+    settings.DATABASE_URL_FINAL,
     poolclass=pool.QueuePool,
     pool_size=settings.SQLALCHEMY_POOL_SIZE,
     max_overflow=settings.SQLALCHEMY_MAX_OVERFLOW,

@@ -6,11 +6,12 @@ from app.core.validators import validate_secret_key
 
 class Settings(BaseSettings):
     # Database Configuration
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_SERVER: str
+    DATABASE_URL: str | None = None
+    POSTGRES_USER: str | None = None
+    POSTGRES_PASSWORD: str | None = None
+    POSTGRES_SERVER: str | None = None
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str
+    POSTGRES_DB: str | None = None
     SQLALCHEMY_POOL_SIZE: int = 20
     SQLALCHEMY_MAX_OVERFLOW: int = 40
     SQLALCHEMY_POOL_PRE_PING: bool = True
@@ -103,8 +104,10 @@ class Settings(BaseSettings):
         return v
 
     @property
-    def DATABASE_URL(self) -> str:
-        """Construct database URL from components."""
+    def DATABASE_URL_FINAL(self) -> str:
+        """Construct database URL from components or use provided DATABASE_URL."""
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     @property

@@ -37,7 +37,7 @@ services:
       redis:
         condition: service_started
     # Overrides the production command locally for hot-reloading development
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.models.main:app --host 0.0.0.0 --port 8000 --reload
 
   redis:
     image: redis:7

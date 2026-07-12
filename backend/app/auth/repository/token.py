@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-import models
+from app import models
 
 
 def is_token_revoked(jti: str, db: Session) -> bool:

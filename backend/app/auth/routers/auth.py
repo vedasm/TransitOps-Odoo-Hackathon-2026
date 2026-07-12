@@ -8,26 +8,26 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import logging
 
-from core.config import settings
-from core.Hashing import Hash
-from core.jwt_handler import (
+from app.core.config import settings
+from app.core.Hashing import Hash
+from app.core.jwt_handler import (
     create_access_token,
     create_refresh_token,
     verify_token_async,
     revoke_token,
     decode_token,
 )
-from core.rate_limiter import RateLimiter
-from core.redis_client import redis_client
-from core.email_sender import send_verification_email, send_password_reset_email
-from core.logging_config import audit_logger
-from database.db import get_db
+from app.core.rate_limiter import RateLimiter
+from app.core.redis_client import redis_client
+from app.core.email_sender import send_verification_email, send_password_reset_email
+from app.core.logging_config import audit_logger
+from app.database import get_db
 from repository import user as user_repo
 from repository import token as token_repo
 from repository import email_verification as email_repo
 from repository import password_reset as reset_repo
 import schemas, models
-from core.dependencies import get_current_user
+from app.core.dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -599,7 +599,7 @@ async def reset_password(
 async def change_password(
     http_request: Request,
     request: schemas.ChangePasswordRequest,
-    current_user: models.user = Depends(get_current_user),
+    current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     client_id = _get_client_identifier(http_request)
@@ -640,7 +640,7 @@ async def change_password(
 @router.get("/me", response_model=schemas.ShowUser)
 async def get_current_user_info(
     http_request: Request,
-    current_user: models.user = Depends(get_current_user)
+    current_user: models.User = Depends(get_current_user)
 ):
     """Get current authenticated user's information."""
     request_id = _get_request_id(http_request)

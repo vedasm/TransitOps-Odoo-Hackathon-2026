@@ -1,7 +1,12 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
-from core.Hashing import Hash
-import models, schemas
+
+try:
+    from app.auth.core.Hashing import Hash
+    from app.auth import models, schemas
+except ModuleNotFoundError:
+    from core.Hashing import Hash
+    import models, schemas
 
 def create_user(request: schemas.UserCreate, db: Session):
     new_user = models.user(

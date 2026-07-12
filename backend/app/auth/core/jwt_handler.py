@@ -2,9 +2,14 @@ from datetime import datetime, timedelta, timezone
 import secrets
 from typing import Any
 from jose import JWTError, jwt
-from core.config import settings
-from core.redis_client import redis_client
 import logging
+
+try:
+    from app.auth.core.config import settings
+    from app.auth.core.redis_client import redis_client
+except ModuleNotFoundError:
+    from core.config import settings
+    from core.redis_client import redis_client
 
 logger = logging.getLogger(__name__)
 

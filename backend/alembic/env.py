@@ -1,24 +1,34 @@
 from logging.config import fileConfig
 import os
+import sys
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
-# 1. Import your database Base metadata from your app core
-# (Adjust this path depending on where your Base model is declared)
-from app.database import Base  
+# 1. Load environment variables from the backend .env file
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+
+# 2. Add backend root to sys.path so Python can resolve absolute imports starting with 'app.'
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# 3. Import your central database Base metadata and settings
+from app.database.base import Base
+from app.auth.core.config import settings
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# 2. Provide Alembic access to your target metadata for auto-generation
+# Provide Alembic access to your target metadata for auto-generation
 target_metadata = Base.metadata
 
 def get_url():
-    # Dynamically inject the URL from the environment matrix at runtime
-    return os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/dbname")
+    # Prefer the app's settings-driven database URL, falling back to env values.
+    if hasattr(settings, "DATABASE_URL"):
+        return settings.DATABASE_URL
+    return os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
 
 def run_migrations_offline() -> None:
     url = get_url()
@@ -33,8 +43,11 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 def run_migrations_online() -> None:
+    # 1. Grab the generic configuration block from alembic.ini
     configuration = config.get_section(config.config_ini_section) or {}
-    configuration["sqlalchemy.url"] = get_url() # Inject target string here
+    
+    # 2. OVERWRITE the placeholder URL with your real environment variable
+    configuration["sqlalchemy.url"] = get_url()
     
     connectable = engine_from_config(
         configuration,

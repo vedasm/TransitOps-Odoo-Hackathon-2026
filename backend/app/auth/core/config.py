@@ -1,7 +1,11 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import field_validator, StringConstraints
+from pydantic import field_validator
 from typing import Annotated
-from core.validators import validate_secret_key
+
+try:
+    from app.auth.core.validators import validate_secret_key
+except ModuleNotFoundError:
+    from core.validators import validate_secret_key
 
 
 class Settings(BaseSettings):

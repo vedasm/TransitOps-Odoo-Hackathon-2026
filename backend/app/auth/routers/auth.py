@@ -8,26 +8,48 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 import logging
 
-from core.config import settings
-from core.Hashing import Hash
-from core.jwt_handler import (
-    create_access_token,
-    create_refresh_token,
-    verify_token_async,
-    revoke_token,
-    decode_token,
-)
-from core.rate_limiter import RateLimiter
-from core.redis_client import redis_client
-from core.email_sender import send_verification_email, send_password_reset_email
-from core.logging_config import audit_logger
-from database.db import get_db
-from repository import user as user_repo
-from repository import token as token_repo
-from repository import email_verification as email_repo
-from repository import password_reset as reset_repo
-import schemas, models
-from core.dependencies import get_current_user
+try:
+    from app.auth.core.config import settings
+    from app.auth.core.Hashing import Hash
+    from app.auth.core.jwt_handler import (
+        create_access_token,
+        create_refresh_token,
+        verify_token_async,
+        revoke_token,
+        decode_token,
+    )
+    from app.auth.core.rate_limiter import RateLimiter
+    from app.auth.core.redis_client import redis_client
+    from app.auth.core.email_sender import send_verification_email, send_password_reset_email
+    from app.auth.core.logging_config import audit_logger
+    from app.auth.database.db import get_db
+    from app.auth.repository import user as user_repo
+    from app.auth.repository import token as token_repo
+    from app.auth.repository import email_verification as email_repo
+    from app.auth.repository import password_reset as reset_repo
+    from app.auth import models, schemas
+    from app.auth.core.dependencies import get_current_user
+except ModuleNotFoundError:
+    from core.config import settings
+    from core.Hashing import Hash
+    from core.jwt_handler import (
+        create_access_token,
+        create_refresh_token,
+        verify_token_async,
+        revoke_token,
+        decode_token,
+    )
+    from core.rate_limiter import RateLimiter
+    from core.redis_client import redis_client
+    from core.email_sender import send_verification_email, send_password_reset_email
+    from core.logging_config import audit_logger
+    from database.db import get_db
+    from repository import user as user_repo
+    from repository import token as token_repo
+    from repository import email_verification as email_repo
+    from repository import password_reset as reset_repo
+    import schemas, models
+    from core.dependencies import get_current_user
 
 logger = logging.getLogger(__name__)
 

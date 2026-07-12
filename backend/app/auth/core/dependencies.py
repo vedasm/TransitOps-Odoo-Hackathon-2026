@@ -1,13 +1,22 @@
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from core.jwt_handler import verify_token, verify_token_async
-from core.redis_client import redis_client
-from core.rate_limiter import RateLimiter
-from database.db import get_db
-from repository import user as user_repo
-import models
 import logging
+
+try:
+    from app.auth.core.jwt_handler import verify_token, verify_token_async
+    from app.auth.core.redis_client import redis_client
+    from app.auth.core.rate_limiter import RateLimiter
+    from app.auth.database.db import get_db
+    from app.auth.repository import user as user_repo
+    from app.auth import models
+except ModuleNotFoundError:
+    from core.jwt_handler import verify_token, verify_token_async
+    from core.redis_client import redis_client
+    from core.rate_limiter import RateLimiter
+    from database.db import get_db
+    from repository import user as user_repo
+    import models
 
 logger = logging.getLogger(__name__)
 

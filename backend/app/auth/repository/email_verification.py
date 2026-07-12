@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
-import models
+
+try:
+    from app.auth import models
+except ModuleNotFoundError:
+    import models
 
 def create_verification_token(user_id: int, token: str, expires_in_hours: int, db: Session):
     record = models.EmailVerificationToken(

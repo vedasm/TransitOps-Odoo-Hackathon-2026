@@ -1,6 +1,10 @@
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-import models
+
+try:
+    from app.auth import models
+except ModuleNotFoundError:
+    import models
 
 
 def is_token_revoked(jti: str, db: Session) -> bool:

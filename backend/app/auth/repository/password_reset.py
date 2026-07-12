@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
-try:
-    from app.auth import models
-except ModuleNotFoundError:
-    import models
+from app.auth import models
+
 
 def create_reset_token(user_id: int, token: str, expires_in_hours: int, db: Session):
     record = models.PasswordResetToken(
@@ -18,10 +16,12 @@ def create_reset_token(user_id: int, token: str, expires_in_hours: int, db: Sess
     db.refresh(record)
     return record
 
+
 def get_reset_token(token: str, db: Session):
     return db.query(models.PasswordResetToken).filter(
         models.PasswordResetToken.reset_token == token
     ).first()
+
 
 def mark_used(reset_id: int, db: Session):
     record = db.query(models.PasswordResetToken).filter(models.PasswordResetToken.id == reset_id).first()

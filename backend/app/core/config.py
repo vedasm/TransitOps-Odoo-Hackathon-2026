@@ -2,10 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 from typing import Annotated
 
-try:
-    from app.auth.core.validators import validate_secret_key
-except ModuleNotFoundError:
-    from core.validators import validate_secret_key
+from app.auth.core.validators import validate_secret_key
 
 
 class Settings(BaseSettings):
@@ -53,13 +50,13 @@ class Settings(BaseSettings):
     # Frontend/Backend URLs - MUST use HTTPS in production
     FRONTEND_URL: str
     BACKEND_URL: str
-    
+
     # Security Settings
     ENVIRONMENT: str = "development"  # development, staging, production
     DEBUG: bool = False
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:3001"]
     REQUIRE_HTTPS: bool = True
-    
+
     # Rate Limiting
     RATE_LIMIT_LOGIN_ATTEMPTS: int = 3
     RATE_LIMIT_LOGIN_WINDOW_SECONDS: int = 900  # 15 minutes
@@ -69,15 +66,15 @@ class Settings(BaseSettings):
     RATE_LIMIT_PASSWORD_RESET_WINDOW_SECONDS: int = 3600
     RATE_LIMIT_EMAIL_VERIFY_ATTEMPTS: int = 10
     RATE_LIMIT_EMAIL_VERIFY_WINDOW_SECONDS: int = 600  # 10 minutes
-    
+
     # Account Security
     MAX_FAILED_LOGIN_ATTEMPTS: int = 5
     ACCOUNT_LOCKOUT_MINUTES: int = 30
-    
+
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_JSON_FORMAT: bool = True
-    
+
     # Request Validation
     MAX_REQUEST_SIZE_MB: int = 10
 
@@ -86,7 +83,7 @@ class Settings(BaseSettings):
     def validate_secret_key_field(cls, v: str) -> str:
         """Validate SECRET_KEY has sufficient cryptographic strength."""
         return validate_secret_key(v)
-    
+
     @field_validator('CORS_ORIGINS', mode='before')
     @classmethod
     def validate_cors_origins(cls, v):
@@ -96,7 +93,7 @@ class Settings(BaseSettings):
         if "*" in v:
             raise ValueError("CORS wildcard '*' not allowed. Specify exact origins.")
         return v
-    
+
     @field_validator('FRONTEND_URL', 'BACKEND_URL')
     @classmethod
     def validate_urls(cls, v: str, info) -> str:

@@ -31,15 +31,13 @@ RUN adduser \
 # 4. Install Python dependencies
 # We copy pyproject.toml separately to leverage Docker caching
 COPY pyproject.toml .
+COPY app/ ./app/
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir .
 
-# 5. Copy the rest of the application code
-COPY . .
 
 # 6. Switch to the non-privileged user
 USER appuser
 
-# 7. Expose the port and start the application
 EXPOSE 8000
 CMD ["gunicorn", "-c", "gunicorn.config.py", "app.main:app"]

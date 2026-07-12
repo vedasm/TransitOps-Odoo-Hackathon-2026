@@ -3,30 +3,23 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import logging
 
-try:
-    from app.auth.core.jwt_handler import verify_token, verify_token_async
-    from app.auth.core.redis_client import redis_client
-    from app.auth.core.rate_limiter import RateLimiter
-    from app.auth.database.db import get_db
-    from app.auth.repository import user as user_repo
-    from app.auth import models
-except ModuleNotFoundError:
-    from core.jwt_handler import verify_token, verify_token_async
-    from core.redis_client import redis_client
-    from core.rate_limiter import RateLimiter
-    from database.db import get_db
-    from repository import user as user_repo
-    import models
+from app.auth.core.jwt_handler import verify_token, verify_token_async
+from app.auth.core.redis_client import redis_client
+from app.auth.core.rate_limiter import RateLimiter
+from app.database.base import get_db
+from app.auth.repository import user as user_repo
+from app.auth import models
 
 logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 rate_limiter = RateLimiter(redis_client)
 
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
-) -> models.user:
+) -> models.User:
     try:
         # Pass db_session for database token revocation check
         claims = await verify_token_async(token, "access", db_session=db)
@@ -48,6 +41,7 @@ async def get_current_user(
         logger.warning(f"User not found: {user_id}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user_obj
+
 
 async def verify_rate_limit(request: Request, action: str, limit: int, window_seconds: int):
     """Verify and increment rate limit counter."""

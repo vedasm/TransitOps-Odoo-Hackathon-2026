@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 # 3. Import your central database Base metadata and settings
 from app.database.base import Base
-from app.auth.core.config import settings
+from app.core.config import settings
 
 config = context.config
 

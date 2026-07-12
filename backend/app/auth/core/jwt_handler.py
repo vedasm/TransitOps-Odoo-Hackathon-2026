@@ -4,12 +4,8 @@ from typing import Any
 from jose import JWTError, jwt
 import logging
 
-try:
-    from app.auth.core.config import settings
-    from app.auth.core.redis_client import redis_client
-except ModuleNotFoundError:
-    from core.config import settings
-    from core.redis_client import redis_client
+from app.core.config import settings
+from app.auth.core.redis_client import redis_client
 
 logger = logging.getLogger(__name__)
 
@@ -113,28 +109,28 @@ async def _is_jti_revoked(jti: str | None, db_session=None) -> bool:
     """
     if not jti:
         return False
-    
+
     # Check Redis cache first (fastest)
     revoked_key = f"revoked_jti:{jti}"
     if await redis_client.exists(revoked_key) == 1:
         return True
-    
+
     # Check database as authoritative source
     if db_session is not None:
         try:
-            from repository import token as token_repo
+            from app.auth.repository import token as token_repo
             is_revoked = token_repo.is_token_revoked(jti, db_session)
-            
+
             # If revoked, cache in Redis for next 24 hours
             if is_revoked:
                 await redis_client.setex(revoked_key, 86400, "1")
-            
+
             return is_revoked
         except Exception as e:
             logger.error(f"Error checking token revocation in database: {e}")
             # If database check fails, assume valid (fail open)
             return False
-    
+
     return False
 
 async def revoke_token_jti(jti: str, expires_seconds: int) -> None:

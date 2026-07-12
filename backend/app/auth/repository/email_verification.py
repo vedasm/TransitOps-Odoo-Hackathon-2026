@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
-try:
-    from app.auth import models
-except ModuleNotFoundError:
-    import models
+from app.auth import models
+
 
 def create_verification_token(user_id: int, token: str, expires_in_hours: int, db: Session):
     record = models.EmailVerificationToken(
@@ -18,10 +16,12 @@ def create_verification_token(user_id: int, token: str, expires_in_hours: int, d
     db.refresh(record)
     return record
 
+
 def get_verification_token(token: str, db: Session):
     return db.query(models.EmailVerificationToken).filter(
         models.EmailVerificationToken.verification_token == token
     ).first()
+
 
 def mark_verified(verification_id: int, db: Session):
     record = db.query(models.EmailVerificationToken).filter(models.EmailVerificationToken.id == verification_id).first()

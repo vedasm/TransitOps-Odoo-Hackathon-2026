@@ -2,16 +2,14 @@ from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from datetime import datetime
 
-try:
-    from app.auth.core.validators import PasswordValidator
-except ModuleNotFoundError:
-    from core.validators import PasswordValidator
+from app.auth.core.validators import PasswordValidator
+
 
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
-    
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v: str) -> str:
@@ -21,7 +19,7 @@ class UserCreate(BaseModel):
         if len(v) > 255:
             raise ValueError("Name too long (max 255 characters)")
         return v.strip()
-    
+
     @field_validator('password')
     @classmethod
     def validate_password(cls, v: str) -> str:
@@ -58,7 +56,7 @@ class PasswordResetRequest(BaseModel):
 
 class PasswordResetConfirm(BaseModel):
     new_password: str
-    
+
     @field_validator('new_password')
     @classmethod
     def validate_password(cls, v: str) -> str:
@@ -72,7 +70,7 @@ class PasswordResetConfirm(BaseModel):
 class ChangePasswordRequest(BaseModel):
     old_password: str
     new_password: str
-    
+
     @field_validator('new_password')
     @classmethod
     def validate_password(cls, v: str) -> str:

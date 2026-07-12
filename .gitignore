@@ -64,5 +64,9 @@ Thumbs.db
 
 # Environments / Secrets / API Keys
 .env
-.env.*
 secrets.json
+
+backend/build/
+backend/*.egg-info/
+backend/__pycache__/
+**/__pycache__/

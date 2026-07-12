@@ -3,12 +3,8 @@ import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-try:
-    from app.auth.core.config import settings
-    from app.auth.core.email_templates import verification_email_html, password_reset_email_html
-except ModuleNotFoundError:
-    from core.config import settings
-    from core.email_templates import verification_email_html, password_reset_email_html
+from app.core.config import settings
+from app.auth.core.email_templates import verification_email_html, password_reset_email_html
 
 logger = logging.getLogger(__name__)
 

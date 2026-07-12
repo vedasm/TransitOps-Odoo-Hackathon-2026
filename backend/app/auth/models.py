@@ -2,12 +2,10 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Enum
 from sqlalchemy.orm import relationship
 
-try:
-    from app.auth.database.db import Base
-except ModuleNotFoundError:
-    from database.db import Base
+from app.database.base import Base
 
-class user(Base):
+
+class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -45,6 +43,7 @@ class user(Base):
         single_parent=True,
     )
 
+
 class Token(Base):
     __tablename__ = "tokens"
 
@@ -55,7 +54,8 @@ class Token(Base):
     revoked_at = Column(DateTime, nullable=True)
     expires_at = Column(DateTime, nullable=False)
 
-    user = relationship("user", back_populates="tokens")
+    user = relationship("User", back_populates="tokens")
+
 
 class EmailVerificationToken(Base):
     __tablename__ = "email_verification_tokens"
@@ -67,7 +67,8 @@ class EmailVerificationToken(Base):
     expires_at = Column(DateTime, nullable=False)
     verified_at = Column(DateTime, nullable=True)
 
-    user = relationship("user", back_populates="email_verification_tokens")
+    user = relationship("User", back_populates="email_verification_tokens")
+
 
 class PasswordResetToken(Base):
     __tablename__ = "password_reset_tokens"
@@ -79,4 +80,4 @@ class PasswordResetToken(Base):
     expires_at = Column(DateTime, nullable=False)
     used_at = Column(DateTime, nullable=True)
 
-    user = relationship("user", back_populates="password_reset_tokens")
+    user = relationship("User", back_populates="password_reset_tokens")

@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script before a build
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tosca_project
+.trash/
+.cache
+.pytest_cache/
+.testmondata
+.hypothesis/
+.requirements.txt
+
+# Poetry / Pipenv / Hatch
+.venv/
+venv/
+ENV/
+env/
+ENV/src/
+
+# Development environments and IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Environments / Secrets / API Keys
+.env
+.env.*
+secrets.json
